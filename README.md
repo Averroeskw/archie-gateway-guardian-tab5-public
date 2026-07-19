@@ -6,7 +6,7 @@
 
 An open-source-ready AI control surface for the **M5Stack Tab5**. A full-screen
 Nexus portal brings the device online, first-time setup happens entirely on the
-device, then Archie condenses from the real 3D artifact into a cosmic command
+device, which turns it into your own command
 console for Hermes, OpenClaw, OpenAI, Claude, or another OpenAI-compatible API.
 
 No Wi-Fi password, API key, gateway token, device address, or local file path
