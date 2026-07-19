@@ -1,0 +1,40 @@
+idf_component_register(
+    SRCS
+        "app_main.cpp"
+        "hermes_mode.cpp"
+        "hermes_console_screen.cpp"
+        "hermes_theme.cpp"
+        "archie_pointcloud.cpp"
+        "direct_ai_client.cpp"
+        "elevenlabs_voice.cpp"
+        "splash_screen.cpp"
+        "setup_wizard.cpp"
+        "settings_screen.cpp"
+        "improv_serial.cpp"
+        "keyboard_status.cpp"
+        "profile_store.cpp"
+        "profile_import.cpp"
+        "telemetry_model.cpp"
+        "wifi_manager.cpp"
+        "ws_hermes_client.cpp"
+        "tab5_keyboard.cpp"
+        "fonts/hack_mono_18.c"
+    INCLUDE_DIRS "."
+    REQUIRES
+        esp_event
+        esp_http_client
+        esp_driver_i2c
+        esp_driver_usb_serial_jtag
+        esp_netif
+        esp_wifi
+        mbedtls
+        nvs_flash
+        json
+        fatfs
+        sdmmc
+        lvgl
+        esp_lvgl_port
+        m5stack_tab5
+        esp_websocket_client
+        esp_codec_dev
+)

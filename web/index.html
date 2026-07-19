@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Archie Gateway Guardian — Web Flasher</title>
+  <style>
+    :root {
+      --bg: #100c0c; --panel: rgba(16,12,12,.92); --edge: #3A3022; --text: #F2EFE9;
+      --dim: #8C8478; --amber: #FFB000; --sun: #F28A48; --yellow: #F2C84B;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; min-height: 100vh; display: flex; align-items: center;
+      justify-content: center; background: var(--bg); color: var(--text);
+      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      /* CRT scanlines, same trick as the firmware theme */
+      background-image: repeating-linear-gradient(
+        to bottom, transparent 0 3px, rgba(0,0,0,.25) 3px 4px);
+    }
+    main {
+      max-width: 560px; padding: 32px 28px; margin: 24px; background: var(--panel);
+      border: 1px solid var(--edge); border-radius: 8px;
+      box-shadow: 0 0 24px rgba(242,138,72,.25); text-align: center;
+    }
+    h1 { color: var(--amber); font-size: 22px; letter-spacing: .12em; margin: 18px 0 6px; }
+    p  { color: var(--dim); line-height: 1.55; font-size: 14px; }
+    p strong { color: var(--yellow); font-weight: 600; }
+    .archie { width: min(390px, 78vw); height: 390px; object-fit: contain;
+      object-position: center; border-radius: 4px; filter: drop-shadow(0 0 18px rgba(242,138,72,.28)); }
+    ol { text-align: left; color: var(--dim); font-size: 14px; line-height: 1.7; }
+    ol b { color: var(--text); font-weight: 600; }
+    esp-web-install-button {
+      --esp-tools-button-color: var(--amber);
+      --esp-tools-button-text-color: #070605;
+      --esp-tools-button-border-radius: 4px;
+      display: inline-block; margin: 18px 0 6px;
+    }
+    .note { font-size: 12px; margin-top: 18px; }
+    a { color: var(--sun); }
+  </style>
+  <script type="module"
+    src="https://unpkg.com/esp-web-tools@10/dist/web/install-button.js?module"></script>
+</head>
+<body>
+  <main>
+    <img class="archie" src="archie_guardian_reference.png" alt="Archie particle guardian"/>
+    <h1>ARCHIE · GATEWAY GUARDIAN</h1>
+    <p>Flash the <strong>M5Stack Tab5</strong> straight from your browser —
+       no toolchain, no drivers, no command line.</p>
+    <ol>
+      <li>Plug the Tab5 into this computer over <b>USB-C</b>.</li>
+      <li>Click <b>CONNECT</b> and pick the serial port.</li>
+      <li>Install the firmware, then enter your <b>Wi-Fi</b> in the dialog
+          that follows (Improv) — or on the device itself.</li>
+      <li>Finish the on-device wizard: link type, credentials and optional voice.</li>
+    </ol>
+    <esp-web-install-button manifest="manifest.json"></esp-web-install-button>
+    <p class="note">Needs Chrome or Edge (Web Serial). Provisioning stays between
+      this browser and the USB device; this project does not receive your credentials.
+      Gateway setup &amp; docs:
+      <a href="https://github.com/Averroeskw/archie-tab5-command-centre-v3">the repository</a> ·
+      ARCHIE • NVS-SERIES • created by @Averroeskw.</p>
+  </main>
+</body>
+</html>

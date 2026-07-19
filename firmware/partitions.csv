@@ -1,0 +1,8 @@
+# Name,   Type, SubType,  Offset,   Size, Flags
+nvs,      data, nvs,      0x9000,   32K,
+otadata,  data, ota,      0x11000,  8K,
+phy_init, data, phy,      0x13000,  4K,
+ota_0,    app,  ota_0,    0x20000,  4M,
+ota_1,    app,  ota_1,    ,         4M,
+coredump, data, coredump, ,         64K,
+storage,  data, fat,      ,         2M,

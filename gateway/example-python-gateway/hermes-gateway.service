@@ -1,0 +1,24 @@
+# Hermes Gateway (Python reference) — systemd unit.
+# Install to /etc/systemd/system/hermes-gateway.service, edit User/paths,
+# then: systemctl daemon-reload && systemctl enable --now hermes-gateway
+#
+# Put HERMES_GATEWAY_TOKEN in /etc/hermes-gateway.env (mode 600), e.g.
+#   HERMES_GATEWAY_TOKEN=replace-with-a-long-random-secret
+#   HERMES_GATEWAY_PORT=8787
+
+[Unit]
+Description=Hermes Gateway (Tab5 panel bridge)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=youruser
+WorkingDirectory=/opt/hermes-gateway
+EnvironmentFile=/etc/hermes-gateway.env
+ExecStart=/opt/hermes-gateway/.venv/bin/python /opt/hermes-gateway/hermes_gateway.py
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

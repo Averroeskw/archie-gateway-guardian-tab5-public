@@ -1,0 +1,58 @@
+name: Release
+
+# Tag a version (git tag v0.1.0 && git push --tags) and this builds the
+# firmware and attaches ready-to-flash binaries to a GitHub Release — users
+# never need ESP-IDF installed.
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release-firmware:
+    name: Build & release firmware (esp32p4)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify source privacy before packaging
+        run: bash scripts/check_secrets.sh --history
+      - name: Build with ESP-IDF v5.4.2
+        uses: espressif/esp-idf-ci-action@v1
+        with:
+          esp_idf_version: v5.4.2
+          target: esp32p4
+          path: "firmware"
+          command: |
+            idf.py reconfigure
+            python3 scripts/patch_usb_component.py
+            idf.py build
+            cd build
+            # One merged image flashable at offset 0x0 with any esptool:
+            #   esptool.py --chip esp32p4 write_flash 0x0 archie-gateway-guardian-tab5-merged.bin
+            python3 -m esptool --chip esp32p4 merge_bin -o archie-gateway-guardian-tab5-merged.bin @flash_args
+      - name: Collect artifacts
+        run: |
+          mkdir -p dist
+          cp firmware/build/archie-gateway-guardian-tab5-merged.bin dist/
+          cp firmware/build/archie_gateway_guardian.bin dist/archie-gateway-guardian-tab5-app.bin
+          cd dist && sha256sum * > SHA256SUMS
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*
+          generate_release_notes: true
+          body: |
+            ## Flash without ESP-IDF
+
+            ```bash
+            pip install esptool
+            esptool.py --chip esp32p4 -b 460800 write_flash 0x0 archie-gateway-guardian-tab5-merged.bin
+            ```
+
+            Then follow the on-device setup wizard (see docs/QUICKSTART.md).
+            `archie-gateway-guardian-tab5-app.bin` is the app-only image for OTA/updates.

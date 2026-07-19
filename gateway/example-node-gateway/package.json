@@ -1,0 +1,17 @@
+{
+  "name": "hermes-gateway-node",
+  "version": "0.1.0",
+  "description": "Node Hermes adapter for Archie Gateway Guardian on M5Stack Tab5",
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node server.mjs",
+    "check": "node --check server.mjs"
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
+  }
+}

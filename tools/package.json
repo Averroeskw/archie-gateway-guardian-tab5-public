@@ -1,0 +1,13 @@
+{
+  "name": "archie-asset-tools",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "pointcloud": "node generate_archie_pointcloud_from_glb.mjs"
+  },
+  "dependencies": {
+    "@gltf-transform/core": "4.3.0",
+    "@gltf-transform/extensions": "4.3.0",
+    "draco3dgltf": "1.5.7"
+  }
+}

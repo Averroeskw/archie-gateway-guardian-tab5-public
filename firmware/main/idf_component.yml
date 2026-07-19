@@ -1,0 +1,6 @@
+dependencies:
+  idf:
+    version: ">=5.4.0"
+  espressif/m5stack_tab5: "^1.2.0~1"
+  espressif/esp_wifi_remote: "*"
+  espressif/esp_websocket_client: "^1.2.3"

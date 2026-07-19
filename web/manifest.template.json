@@ -1,0 +1,14 @@
+{
+  "name": "Archie Gateway Guardian",
+  "version": "__VERSION__",
+  "new_install_prompt_erase": true,
+  "builds": [
+    {
+      "chipFamily": "ESP32-P4",
+      "improv": true,
+      "parts": [
+        { "path": "archie-gateway-guardian-tab5-merged.bin", "offset": 0 }
+      ]
+    }
+  ]
+}

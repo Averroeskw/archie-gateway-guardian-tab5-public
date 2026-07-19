@@ -1,0 +1,12 @@
+# Run the Hermes Gateway in Docker:
+#   cd gateway
+#   cp example-python-gateway/.env.example example-python-gateway/.env
+#   $EDITOR example-python-gateway/.env    # token + LLM key
+#   docker compose up -d
+services:
+  hermes-gateway:
+    build: ./example-python-gateway
+    env_file: ./example-python-gateway/.env
+    ports:
+      - "8787:8787"
+    restart: unless-stopped
