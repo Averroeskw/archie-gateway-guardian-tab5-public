@@ -1,0 +1,48 @@
+name: Web flasher (GitHub Pages)
+
+# Deploys web/ + the latest release firmware as a browser flasher.
+# Runs when a release publishes (after the Release workflow attaches binaries)
+# or manually. NOTE: Pages needs the repo to be public (or a paid plan) and
+# Pages enabled in Settings → Pages → Source: GitHub Actions.
+on:
+  workflow_run:
+    workflows: [Release]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - name: Assemble site (page + manifest + latest firmware)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p site
+          cp web/index.html site/
+          cp assets/archie_guardian_reference.png site/
+          TAG="$(gh release list --json tagName,publishedAt --jq 'sort_by(.publishedAt) | reverse | .[0].tagName')"
+          echo "Latest release: $TAG"
+          gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --pattern "archie-gateway-guardian-tab5-merged.bin" --dir site
+          sed "s/__VERSION__/${TAG#v}/" web/manifest.template.json > site/manifest.json
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - id: deployment
+        uses: actions/deploy-pages@v4

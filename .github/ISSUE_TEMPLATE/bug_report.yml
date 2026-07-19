@@ -1,0 +1,39 @@
+name: Bug report
+description: Report a reproducible firmware, gateway, or installer problem
+title: "bug: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: Do not paste Wi-Fi names, URLs, IP addresses, tokens, API keys, serial logs, or private screenshots.
+  - type: input
+    id: firmware
+    attributes:
+      label: Firmware version
+      placeholder: v0.1.0-alpha.1 or commit SHA
+    validations:
+      required: true
+  - type: input
+    id: panel
+    attributes:
+      label: Tab5 panel/touch revision
+      placeholder: ILI9881C + GT911, ST7123, or ST7121
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction steps
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected and observed behavior
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Redacted logs
+      description: Remove credentials, SSIDs, hosts, addresses, and device identifiers first.

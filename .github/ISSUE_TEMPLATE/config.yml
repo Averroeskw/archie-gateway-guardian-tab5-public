@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security vulnerability
+    url: https://github.com/Averroeskw/archie-gateway-guardian-tab5/security/advisories/new
+    about: Report a vulnerability privately; do not open a public issue.
+  - name: Setup walkthrough
+    url: https://github.com/Averroeskw/archie-gateway-guardian-tab5/blob/main/docs/QUICKSTART.md
+    about: Follow the clean-flash and onboarding guide first.

@@ -1,0 +1,87 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+jobs:
+  privacy-scan:
+    name: Tracked-file privacy scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - name: Reject credentials and machine-specific endpoints
+        run: bash scripts/check_secrets.sh
+
+  firmware-build:
+    name: Firmware build (esp32p4)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - name: Build with ESP-IDF v5.4.2
+        uses: espressif/esp-idf-ci-action@v1
+        with:
+          esp_idf_version: v5.4.2
+          target: esp32p4
+          path: "firmware"
+          # reconfigure pulls managed components; the patch then fixes
+          # espressif/usb (a transitive Tab5 BSP dep) for the stock 5.4.2 HAL.
+          command: |
+            idf.py reconfigure
+            python3 scripts/patch_usb_component.py
+            idf.py build
+
+  gateway-lint:
+    name: Gateway examples
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Byte-compile the Python gateway
+        run: python3 -m py_compile gateway/example-python-gateway/hermes_gateway.py
+      - name: Install Python gateway dependencies
+        run: python3 -m pip install --quiet -r gateway/example-python-gateway/requirements.txt
+      - name: Check the setup script
+        run: bash -n gateway/quickstart.sh
+      - name: Start Python gateway
+        run: |
+          HERMES_GATEWAY_TOKEN=ci-smoke-token python3 gateway/example-python-gateway/hermes_gateway.py >/tmp/hermes-python.log 2>&1 &
+          echo $! > /tmp/hermes-python.pid
+          for _ in {1..30}; do curl --fail --silent --connect-timeout 1 http://127.0.0.1:8787/health >/dev/null && exit 0; sleep 0.5; done
+          cat /tmp/hermes-python.log
+          exit 1
+      - name: Exercise Python gateway protocol
+        run: python3 gateway/smoke_test.py
+      - name: Stop Python gateway
+        if: always()
+        run: kill "$(cat /tmp/hermes-python.pid)" 2>/dev/null || true
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "20"
+      - name: Syntax-check the Node gateway
+        run: node --check gateway/example-node-gateway/server.mjs
+      - name: Install Node gateway dependencies
+        working-directory: gateway/example-node-gateway
+        run: npm ci
+      - name: Start Node gateway
+        working-directory: gateway/example-node-gateway
+        run: |
+          HERMES_GATEWAY_TOKEN=ci-smoke-token node server.mjs >/tmp/hermes-node.log 2>&1 &
+          echo $! > /tmp/hermes-node.pid
+          for _ in {1..30}; do curl --fail --silent --connect-timeout 1 http://127.0.0.1:8787/health >/dev/null && exit 0; sleep 0.5; done
+          cat /tmp/hermes-node.log
+          exit 1
+      - name: Exercise Node gateway protocol
+        run: python3 gateway/smoke_test.py
+      - name: Stop Node gateway
+        if: always()
+        run: kill "$(cat /tmp/hermes-node.pid)" 2>/dev/null || true
